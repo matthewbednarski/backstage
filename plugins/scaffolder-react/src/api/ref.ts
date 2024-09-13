@@ -26,7 +26,3 @@ export const scaffolderApiRef = getOrCreateGlobalSingleton(
       id: 'plugin.scaffolder.service',
     }),
 );
-
-export const formFieldsApiRef = createApiRef<ScaffolderFormFieldsApi>({
-  id: 'plugin.scaffolder.form-fields',
-});
