@@ -43,6 +43,13 @@ import { ErrorPage } from '@backstage/core-components';
 
 import { ActionsPage } from '../../components/ActionsPage';
 import { ListTasksPage } from '../../components/ListTasksPage';
+import {
+  selectedTemplateRouteRef as newSelectedTemplateRouteRef,
+  scaffolderTaskRouteRef as newScaffolderTaskRouteRef,
+  editRouteRef as newEditRouteRef,
+  actionsRouteRef as newActionsRouteRef,
+  scaffolderListTaskRouteRef as newScaffolderListTaskRouteRef,
+} from '../../alpha/extensions';
 
 import {
   TemplateListPageProps,
@@ -124,63 +131,73 @@ export const Router = (props: PropsWithChildren<RouterProps>) => {
   const customLayouts = useCustomLayouts(outlet);
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <TemplateListPageComponent
-            TemplateCardComponent={TemplateCardComponent}
-            contextMenu={props.contextMenu}
-            groups={props.groups}
-            templateFilter={props.templateFilter}
-            headerOptions={props.headerOptions}
-          />
-        }
-      />
-      <Route
-        path={selectedTemplateRouteRef.path}
-        element={
-          <SecretsContextProvider>
-            <TemplateWizardPageComponent
+    <RouteRefCompatProvider
+      bindings={[
+        [selectedTemplateRouteRef, newSelectedTemplateRouteRef],
+        [scaffolderTaskRouteRef, newScaffolderTaskRouteRef],
+        [editRouteRef, newEditRouteRef],
+        [actionsRouteRef, newActionsRouteRef],
+        [scaffolderListTaskRouteRef, newScaffolderListTaskRouteRef],
+      ]}
+    >
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <TemplateListPageComponent
+              TemplateCardComponent={TemplateCardComponent}
+              contextMenu={props.contextMenu}
+              groups={props.groups}
+              templateFilter={props.templateFilter}
               headerOptions={props.headerOptions}
-              customFieldExtensions={fieldExtensions}
-              layouts={customLayouts}
-              components={{ ReviewStepComponent }}
-              formProps={props.formProps}
             />
-          </SecretsContextProvider>
-        }
-      />
-      <Route
-        path={scaffolderTaskRouteRef.path}
-        element={
-          <TaskPageComponent
-            TemplateOutputsComponent={TemplateOutputsComponent}
-          />
-        }
-      />
-      <Route
-        path={editRouteRef.path}
-        element={
-          <SecretsContextProvider>
-            <TemplateEditorPage
-              customFieldExtensions={fieldExtensions}
-              layouts={customLayouts}
-              formProps={props.formProps}
+          }
+        />
+        <Route
+          path={selectedTemplateRouteRef.path}
+          element={
+            <SecretsContextProvider>
+              <TemplateWizardPageComponent
+                headerOptions={props.headerOptions}
+                customFieldExtensions={fieldExtensions}
+                layouts={customLayouts}
+                components={{ ReviewStepComponent }}
+                formProps={props.formProps}
+              />
+            </SecretsContextProvider>
+          }
+        />
+        <Route
+          path={scaffolderTaskRouteRef.path}
+          element={
+            <TaskPageComponent
+              TemplateOutputsComponent={TemplateOutputsComponent}
             />
-          </SecretsContextProvider>
-        }
-      />
+          }
+        />
+        <Route
+          path={editRouteRef.path}
+          element={
+            <SecretsContextProvider>
+              <TemplateEditorPage
+                customFieldExtensions={fieldExtensions}
+                layouts={customLayouts}
+                formProps={props.formProps}
+              />
+            </SecretsContextProvider>
+          }
+        />
 
-      <Route path={actionsRouteRef.path} element={<ActionsPage />} />
-      <Route
-        path={scaffolderListTaskRouteRef.path}
-        element={<ListTasksPage />}
-      />
-      <Route
-        path="*"
-        element={<ErrorPage status="404" statusMessage="Page not found" />}
-      />
-    </Routes>
+        <Route path={actionsRouteRef.path} element={<ActionsPage />} />
+        <Route
+          path={scaffolderListTaskRouteRef.path}
+          element={<ListTasksPage />}
+        />
+        <Route
+          path="*"
+          element={<ErrorPage status="404" statusMessage="Page not found" />}
+        />
+      </Routes>
+    </RouteRefCompatProvider>
   );
 };
